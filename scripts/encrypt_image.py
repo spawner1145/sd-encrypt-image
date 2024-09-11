@@ -17,7 +17,7 @@ import sys
 from urllib.parse import unquote
 
 repo_dir = md_scripts.basedir()
-password = getattr(shared.cmd_opts, 'enc-pw', None)
+password = getattr(shared.cmd_opts, 'enc_pw', None)
 api_enable = getattr(shared.cmd_opts, 'api', False)
 
 def hook_http_request(app: FastAPI):
