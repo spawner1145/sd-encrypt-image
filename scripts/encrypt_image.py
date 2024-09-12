@@ -200,13 +200,10 @@ if PILImage.Image.__name__ != 'EncryptedImage':
         return base64.b64encode(bytes_data)
   
       
-    #if password:
-        #PILImage.Image = EncryptedImage
-        #PILImage.open = open
-        #api.encode_pil_to_base64 = encode_pil_to_base64
-PILImage.Image = EncryptedImage
-PILImage.open = open
-api.encode_pil_to_base64 = encode_pil_to_base64
+    if password:
+        PILImage.Image = EncryptedImage
+        PILImage.open = open
+        api.encode_pil_to_base64 = encode_pil_to_base64
         
 if password:
     script_callbacks.on_app_started(app_started_callback)
