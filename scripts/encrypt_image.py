@@ -16,7 +16,8 @@ import sys
 from urllib.parse import unquote
 
 repo_dir = md_scripts.basedir()
-password = getattr(shared.cmd_opts, 'enc_pw', None)
+#password = getattr(shared.cmd_opts, 'enc_pw', None)
+password = true
 api_enable = getattr(shared.cmd_opts, 'api', False)
 
 def hook_http_request(app: FastAPI):
@@ -199,7 +200,7 @@ if PILImage.Image.__name__ != 'EncryptedImage':
             bytes_data = output_bytes.getvalue()
         return base64.b64encode(bytes_data)
   
-  
+      
     if password:
         PILImage.Image = EncryptedImage
         PILImage.open = open
