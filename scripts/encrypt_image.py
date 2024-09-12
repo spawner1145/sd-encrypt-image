@@ -197,7 +197,7 @@ if PILImage.Image.__name__ != 'EncryptedImage':
                 pnginfo["Encrypt"] = None
             image.save(output_bytes, format="PNG", quality=opts.jpeg_quality)
             bytes_data = output_bytes.getvalue()
-        return base64.b64encode(bytes_data)
+        #return base64.b64encode(bytes_data)
   
   
     if password:
