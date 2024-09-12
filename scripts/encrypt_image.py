@@ -177,7 +177,7 @@ if PILImage.Image.__name__ != 'EncryptedImage':
                 image = EncryptedImage.from_image(image=image)
                 return image
             if 'Encrypt' in pnginfo and pnginfo["Encrypt"] == 'pixel_shuffle_3':
-                image.paste(PILImage.fromarray(decrypt_image_v3(decrypt_image_v3(image, get_sha256(password)), get_sha256(password))))
+                image.paste(PILImage.fromarray(decrypt_image_v3(image, get_sha256(password))))
                 pnginfo["Encrypt"] = None
                 image = EncryptedImage.from_image(image=image)
                 return image
