@@ -19,6 +19,8 @@ from urllib.parse import unquote
 repo_dir = md_scripts.basedir()
 password = getattr(shared.cmd_opts, 'enc_pw', None)
 api_enable = getattr(shared.cmd_opts, 'api', False)
+webp_enable = getattr(shared.cmd_opts, 'enable_webp', False)
+
 
 def hook_http_request(app: FastAPI):
     @app.middleware("http")
@@ -63,9 +65,14 @@ def hook_http_request(app: FastAPI):
                     for key in pnginfo.keys():
                         if pnginfo[key]:
                             info.add_text(key,pnginfo[key])
-                    image.save(buffered, format=PngImagePlugin.PngImageFile.format, pnginfo=info)
+                    if(webp_enable):
+                        image.save(buffered, format="WebP", quality=100)
+                        pic_format = "webp"
+                    else:
+                        image.save(buffered, format=PngImagePlugin.PngImageFile.format, pnginfo=info)
+                        pic_format = "png"
                     decrypted_image_data = buffered.getvalue()
-                    response: Response = Response(content=decrypted_image_data, media_type="image/png")
+                    response: Response = Response(content=decrypted_image_data, media_type=f"image/{pic_format}")
                     return response
         
         return await call_next(req)
@@ -214,3 +221,6 @@ if password:
 
 else:
     print('图片加密插件已安装，但缺少密码参数未启动')
+
+if webp_enable:
+    print('WebP格式输出已启用')
