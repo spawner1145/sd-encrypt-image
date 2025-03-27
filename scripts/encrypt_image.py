@@ -203,8 +203,12 @@ if PILImage.Image.__name__ != 'EncryptedImage':
             if 'Encrypt' in pnginfo and pnginfo["Encrypt"] == 'pixel_shuffle_3':
                 image.paste(PILImage.fromarray(decrypt_image_v3(image, get_sha256(password))))
                 pnginfo["Encrypt"] = None
-            image.save(output_bytes, format="PNG", quality=opts.jpeg_quality)
+            if webp_enable:
+                image.save(output_bytes, format="WebP", quality=100)
+            else:
+                image.save(output_bytes,format="PNG",quality=opts.jpeg_quality)
             bytes_data = output_bytes.getvalue()
+            print("output b64\n")
         return base64.b64encode(bytes_data)
   
   
