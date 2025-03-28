@@ -205,10 +205,11 @@ if PILImage.Image.__name__ != 'EncryptedImage':
                 pnginfo["Encrypt"] = None
             if webp_enable:
                 image.save(output_bytes, format="WebP", quality=100)
+                print("\noutput webp\n")
             else:
                 image.save(output_bytes,format="PNG",quality=opts.jpeg_quality)
+                print("\noutput png\n")
             bytes_data = output_bytes.getvalue()
-            print("output b64\n")
         return base64.b64encode(bytes_data)
   
   
