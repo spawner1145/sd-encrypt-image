@@ -19,6 +19,8 @@ from urllib.parse import unquote
 repo_dir = md_scripts.basedir()
 password = getattr(shared.cmd_opts, 'enc_pw', None)
 api_enable = getattr(shared.cmd_opts, 'api', False)
+webp_enable = getattr(shared.cmd_opts, 'enable_webp', False)
+
 
 def hook_http_request(app: FastAPI):
     @app.middleware("http")
@@ -63,9 +65,14 @@ def hook_http_request(app: FastAPI):
                     for key in pnginfo.keys():
                         if pnginfo[key]:
                             info.add_text(key,pnginfo[key])
-                    image.save(buffered, format=PngImagePlugin.PngImageFile.format, pnginfo=info)
+                    if(webp_enable):
+                        image.save(buffered, format="WebP", quality=100)
+                        pic_format = "webp"
+                    else:
+                        image.save(buffered, format=PngImagePlugin.PngImageFile.format, pnginfo=info)
+                        pic_format = "png"
                     decrypted_image_data = buffered.getvalue()
-                    response: Response = Response(content=decrypted_image_data, media_type="image/png")
+                    response: Response = Response(content=decrypted_image_data, media_type=f"image/{pic_format}")
                     return response
         
         return await call_next(req)
@@ -196,7 +203,12 @@ if PILImage.Image.__name__ != 'EncryptedImage':
             if 'Encrypt' in pnginfo and pnginfo["Encrypt"] == 'pixel_shuffle_3':
                 image.paste(PILImage.fromarray(decrypt_image_v3(image, get_sha256(password))))
                 pnginfo["Encrypt"] = None
-            image.save(output_bytes, format="PNG", quality=opts.jpeg_quality)
+            if webp_enable:
+                image.save(output_bytes, format="WebP", quality=100)
+                print("\noutput webp\n")
+            else:
+                image.save(output_bytes,format="PNG",quality=opts.jpeg_quality)
+                print("\noutput png\n")
             bytes_data = output_bytes.getvalue()
         return base64.b64encode(bytes_data)
   
@@ -214,3 +226,6 @@ if password:
 
 else:
     print('图片加密插件已安装，但缺少密码参数未启动')
+
+if webp_enable:
+    print('WebP格式输出已启用')
